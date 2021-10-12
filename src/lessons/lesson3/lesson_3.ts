@@ -1,4 +1,4 @@
-console.log('lesson 3');
+// console.log('lesson 3');
 
 // Event loop
 // https://learn.javascript.ru/event-loop
