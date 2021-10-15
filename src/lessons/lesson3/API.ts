@@ -13,6 +13,8 @@ const API = {
         return axiosInstance.get(query)
     },
     searchFilmsByType: (title: string, type: string) => {
+        const queryType = `${key}&s=${title}&type=${type}`
+        return axiosInstance.get(queryType)
     }
 };
 

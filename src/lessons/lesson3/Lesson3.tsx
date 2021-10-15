@@ -14,7 +14,7 @@ type FilmType = {
 const Lesson3 = () => {
     const [searchName, setSearchName] = useState('');
     const [searchNameByType, setSearchNameByType] = useState('');
-    const [searchResultByType, setSearchResultByType] = useState('');
+    const [searchResultByType, setSearchResultByType] = useState<Array<FilmType>>([]);
     const [searchResult, setSearchResult] = useState<Array<FilmType>>([]);
     const [errorMessage, setErrorMessage] = useState('');
     // const [searchResult, setSearchResult] = useState('');
@@ -40,21 +40,45 @@ const Lesson3 = () => {
             const {data} = await API.searchFilmsByTitle(searchName)
             const {Search, Response, Error} = data
             if (Response === 'True') {
-                // setSearchResult(JSON.stringify(Search))
-                setErrorMessage('')
+                errorMessage && setErrorMessage('')
                 setSearchResult(Search)
             } else {
                 setErrorMessage(Error)
             }
 
-        } catch(e){
+        } catch (e) {
             console.log("Big Error Data")
         }
     };
 
-    const searchByType = (e: React.MouseEvent<HTMLButtonElement>) => {
+    // const searchByType = (e: React.MouseEvent<HTMLButtonElement>) => {
+    //     const type: string = e.currentTarget.dataset.t ? e.currentTarget.dataset.t : '';
+    //    API.searchFilmsByType(searchNameByType, type)
+    //         .then(({data}) => {
+    //             const {Search, Response, Error} = data
+    //             if(Response==='True'){
+    //                 setSearchResultByType(JSON.stringify(Search))
+    //                 console.log(res)
+    //             }else{
+    //                 setSearchResultByType(Error)
+    //             }
+    //         })
+    //         .catch(console.log)
+    // }
+    const searchByType = async (e: React.MouseEvent<HTMLButtonElement>) => {
         const type: string = e.currentTarget.dataset.t ? e.currentTarget.dataset.t : '';
-        API.searchFilmsByType(searchNameByType, type)
+        try {
+            const {data} = await API.searchFilmsByType(searchNameByType, type)
+            const {Search, Response, Error} = data
+            if (Response === 'True') {
+                errorMessage && setErrorMessage('')
+                setSearchResultByType(Search)
+            } else {
+                setErrorMessage(Error)
+            }
+        } catch (e) {
+            console.log('Error')
+        }
     }
 
     return (
@@ -65,7 +89,8 @@ const Lesson3 = () => {
                 <input type="text" value={searchName} onChange={(e) => setSearchName(e.currentTarget.value)}/>
                 <button onClick={searchFilm}>Search</button>
                 <div className={s.imageList}>
-                    {errorMessage ? errorMessage : searchResult.map(el => <span key={el.imdbID}><img src={el.Poster} alt=""/></span>)}
+                    {errorMessage ? errorMessage : searchResult.map(el => <span key={el.imdbID}><img src={el.Poster}
+                                                                                                     alt=""/></span>)}
                 </div>
             </div>
 
@@ -75,8 +100,9 @@ const Lesson3 = () => {
                        onChange={(e) => setSearchNameByType(e.currentTarget.value)}/>
                 <button onClick={searchByType} data-t='movie'>Movie</button>
                 <button onClick={searchByType} data-t='series'>Series</button>
-                <div>
-                    {searchResultByType}
+                <div className={s.imageList}>
+                    {errorMessage ? errorMessage : searchResultByType.map(el => <span key={el.imdbID}><img src={el.Poster}
+                                                                                                     alt=""/></span>)}
                 </div>
             </div>
         </div>
