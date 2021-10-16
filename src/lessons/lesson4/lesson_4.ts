@@ -87,10 +87,19 @@ export const handlePromise:HandleObjectType ={
 }
 export const createPromise = () => {
     handlePromise.promise = new Promise((res,rej)=> {
+        console.log('Promise is created')
         handlePromise.resolve = res
         handlePromise.reject = rej
     })
-
+    handlePromise.promise
+        .then(handlePromise.onSuccess)
+        .catch(handlePromise.onError)
+}
+export const resolvePromise = () => {
+    handlePromise.resolve && handlePromise.resolve('1')
+}
+export const rejectPromise = () => {
+    handlePromise.reject && handlePromise.reject('0')
 }
 
 // Task 06
@@ -99,15 +108,35 @@ export const createPromise = () => {
 // прибавляет к нему Ваше имя и возвращает новую строку из функции
 // Создайте функцию print, которая выводит в консоль значение своего параметра
 // Добавьте два метода then и передайте созданные функции.
-
-
+const onSuccess =(message:any)=>{
+    return message + ' ' + 'Kirill'
+}
+const print =(param:any)=>{
+    console.log(param)
+}
+let prom = new Promise((res,rej)=>{
+    setTimeout(res,1000,"My name is")
+})
+prom
+    .then(elem => onSuccess(elem))
+    .then(data => print(data))
 // Task 7
 // Создайте три промиса. Первый промис возвращает объект { name: "Anna" } через 2с,
 // второй промис возвращает объект {age: 16} через 3 с, а третий {city: ''} через 4с.
 // Получите результаты работы промисов, объедините свойства объектов
 // и выведите в консоль {name, age, city}
+let pr1 = new Promise((res,rej)=>{
+    setTimeout(res,2000,{ name: "Anna" })
+})
+let pr2 = new Promise((res,rej)=>{
+    setTimeout(res,3000,{age: 16})
+})
+let pr3 = new Promise((res,rej)=>{
+    setTimeout(res,4000,{city: ''})
+})
 
-
+// @ts-ignore
+Promise.all([pr1,pr2,pr3]).then(value=> console.log(Object.assign(...value)))
 
 // just a plug
 export default ()=>{};
